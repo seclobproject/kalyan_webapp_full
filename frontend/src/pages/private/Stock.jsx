@@ -226,7 +226,7 @@ if(addStockModal?.show===false){
                       setName(selectedOption?.label);
                     }}
                     required
-                    options={allFranchise.map((franchise) => ({
+                    options={allFranchise?.map((franchise) => ({
                       value: franchise._id,
                       label: franchise.franchiseName,
                     }))}
@@ -269,7 +269,7 @@ if(addStockModal?.show===false){
                   <tbody>
                     {allProducts?.length ? (
                       <>
-                        {allProducts.map((products, index) => (
+                        {allProducts?.map((products, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>
@@ -411,7 +411,7 @@ if(addStockModal?.show===false){
                 required
               >
                 <option value="">Select franchise name</option>
-                {allFranchise.map((franchise, index) => (
+                {allFranchise?.map((franchise, index) => (
                   <option key={index} value={franchise?._id}>
                     {franchise?.franchiseName}
                   </option>

@@ -45,8 +45,7 @@ const handleLogin = (e) => {
 };
   return (
     <>
-        <div className="account-pages " style={{backgroundImage:'url(/assets/images/background.png)',height:"100vh"}} > 
-
+<div className="account-pages" style={{backgroundImage: 'url(/assets/images/background.png)', backgroundSize: 'cover', height: '100vh'}}>
          <div className="container">
             <div className="row justify-content-center">
             <div className="col-md-8 col-lg-6 col-xl-4">

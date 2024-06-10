@@ -45,7 +45,7 @@ function StockReport() {
   return (
     <>
       <SlideMotion>
-        <div className="col-xl-12 mt-4 me-5">
+        <div className="col-xl-12 mt-4">
           <div className="card">
             <div className="card-body">
               <div className="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">

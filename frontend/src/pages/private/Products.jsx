@@ -18,6 +18,7 @@ function Products() {
   });
   const [validated, setValidated] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
+  console.log("al",allProducts);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
   const [allCategory, setAllCatgeory] = useState([]);
@@ -229,7 +230,7 @@ getAllProducts();
                   <tbody>
                       {allProducts?.length ? (
                         <>
-                          {allProducts.map((products, index) => (
+                          {allProducts?.map((products, index) => (
                             <tr key={index}>
                               <td>{index + 1}</td>
                               <td>
@@ -408,7 +409,7 @@ getAllProducts();
   required
 >
   <option value="">Select category name</option>
-  {allCategory.map((item, index) => (
+  {allCategory?.map((item, index) => (
     <option key={index} value={item._id}>
       {item.categoryName}
     </option>

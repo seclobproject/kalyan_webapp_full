@@ -2,22 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModalComponent from "../Components/ModalComponents";
 import { Button } from "react-bootstrap";
-import SidebarLeft from "./Sidebar_left";
 
 function Header({}) {
   const navigate = useNavigate();
   const [logOutModal, setLogOutModal] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
   const handleLogout = () => {
     localStorage.removeItem("User");
     localStorage.removeItem("loggedIn");
-
     navigate("/");
   };
 
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
-  };
 
 
 
