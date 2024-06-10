@@ -4,22 +4,15 @@ import ModalComponent from "../Components/ModalComponents";
 import { Button } from "react-bootstrap";
 import SidebarLeft from "./Sidebar_left";
 
-function Header({}) {
+function Header({ toggleSidebar, drawer }) {
   const navigate = useNavigate();
   const [logOutModal, setLogOutModal] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
   const handleLogout = () => {
     localStorage.removeItem("User");
     localStorage.removeItem("loggedIn");
 
     navigate("/");
   };
-
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
-  };
-
-
 
   return (
     <>
@@ -50,18 +43,23 @@ function Header({}) {
         {/* LOGO */}
         <div className="logo-box">
           <a href={undefined} className="logo logo-dark text-center">
-            <span className="logo-lg">
+            <span className='logo-lg'>
               <img src="/assets/images/kalyan logo-01.png" alt height={120} />
             </span>
           </a>
         </div>
         <ul className="list-unstyled topnav-menu topnav-menu-left mb-0">
-          {/* <li>
-            <button className="button-menu-mobile disable-btn waves-effect"  onClick={toggleSidebar}>
+          {!drawer ? <li>
+            <button className="button-menu-mobile disable-btn waves-effect" onClick={toggleSidebar}>
               <i className="fe-menu" />
             </button>
-          </li> */}
-          <li></li>
+          </li> : <li>
+            <button className="button-menu-mobile disable-btn waves-effect" onClick={toggleSidebar}>
+              &#x2716;
+            </button>
+          </li>}
+         
+         
         </ul>
         <div className="clearfix" />
       </div>

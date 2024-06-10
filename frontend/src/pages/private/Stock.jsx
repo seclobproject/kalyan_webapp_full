@@ -200,7 +200,7 @@ if(addStockModal?.show===false){
         <div className="col-xl-12 mt-4">
           <div className="card">
             <div className="card-body">
-              <div className="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+              <div className="d-flex flex-wrap align-items-center justify-content-between px-4 py-3 border-bottom">
                 <h3
                   className="card-title fw-semibold mb-0"
                   style={{ color: "#F7AE15", margin: 0 }}
