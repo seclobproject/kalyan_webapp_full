@@ -17,10 +17,9 @@ import { width } from "@fortawesome/free-solid-svg-icons/fa0";
 // import 'antd/dist/antd.css'; // Import Ant Design styles
 
 const { Sider } = Layout;
-const SidebarLeft = ({ showSidebar }) => {
+const SidebarLeft = ({ drawer }) => {
   const location = useLocation();
 
-  console.log(showSidebar, "shoe");
   const [logOutModal, setLogOutModal] = useState(false);
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -28,7 +27,7 @@ const SidebarLeft = ({ showSidebar }) => {
     localStorage.removeItem("loggedIn");
     navigate("/");
   };
-
+console.log(drawer);
   const menuItems = {
     "/dashboard": "dashboard",
     "/franchises": "franchises",
@@ -40,7 +39,7 @@ const SidebarLeft = ({ showSidebar }) => {
   const defaultSelectedKey = menuItems[location.pathname] || "dashboard";
   return (
     <>
-      <Sider collapsible={false} className="left-side-menu custom-sider mt-2">
+      <Sider collapsible={false} className={` ${drawer ? 'sidebar-enable' : ''} left-side-menu ${drawer ? ' show' : ''} custom-sider pt-4`}>
         <Menu
           theme="dark"
           mode="inline"

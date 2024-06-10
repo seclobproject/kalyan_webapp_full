@@ -5,16 +5,21 @@ import { Outlet } from 'react-router-dom'
 import Footer from '../layouts/Footer'
 import Rightbar from '../layouts/Rightbar'
 
-function OutletConnnection({showSidebar}) {
-  const [drawer,setDrawer]=useState(true)
-console.log(showSidebar,"logging");
+function OutletConnnection() {
 
+  const [drawer,setDrawer]=useState(false)
+
+
+  const toggleSidebar = () => {
+    setDrawer(!drawer);
+  };
+console.log(drawer);
 
   return (
     <div>
         <div id="wrapper">
-        <Header />
-        <Sidebar_left showSidebar={showSidebar}/>
+        <Header toggleSidebar={toggleSidebar} drawer={drawer}/>
+        <Sidebar_left drawer={drawer}/>
         <div className="content-page">
         <Outlet />
         </div>
