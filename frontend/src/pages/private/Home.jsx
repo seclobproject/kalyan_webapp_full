@@ -82,9 +82,10 @@ function Home() {
                 </div>
               </div>
               {/* end col */}
-              <div className="col-xl-4 col-md-6">
-                <div className="card">
-                  <div className="card-body" style={{ background: "#001529" }}>
+            
+                  <div className="col-xl-4 col-md-6">
+                <div className="card" style={{ background: "#001529" }}>
+                  <div className="card-body">
                     <h4
                       className="header-title mt-0 mb-4"
                       style={{ height: "70%", color: "white" }}
@@ -101,7 +102,7 @@ function Home() {
                         </h2>
                         <div className="progress progress-bar-alt-success progress-sm">
                           <div
-                            className="progress-bar "
+                            className="progress-bar"
                             role="progressbar"
                             aria-valuenow={77}
                             aria-valuemin={0}
@@ -119,24 +120,18 @@ function Home() {
                 </div>
               </div>
               {/* end col */}
-              <div className="col-xl-4  col-md-6">
-                <div className="card">
-                  <div className="card-body" style={{ background: "#001529" }}>
+              
+              <div className="col-xl-4 col-md-6">
+                <div className="card" style={{ background: "#001529" }}>
+                  <div className="card-body">
                     <h4
                       className="header-title mt-0 mb-4"
                       style={{ height: "70%", color: "white" }}
                     >
-                      Total products
+                      Total Products
                     </h4>
                     <div className="widget-chart-1">
                       <div className="widget-detail-1 text-end">
-                        {/* <span className="badge bg-success rounded-pill float-start mt-3">
-                      <i
-                        className="mdi mdi-trending-up"
-                        style={{ height: "100px" }}
-                      />{" "}
-                    </span> */}
-
                         <h2
                           className="fw-normal pt-2 mb-1"
                           style={{ color: "white" }}
@@ -145,7 +140,7 @@ function Home() {
                         </h2>
                         <div className="progress progress-bar-alt-success progress-sm">
                           <div
-                            className="progress-bar "
+                            className="progress-bar"
                             role="progressbar"
                             aria-valuenow={77}
                             aria-valuemin={0}
