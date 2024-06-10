@@ -200,51 +200,50 @@ if(addStockModal?.show===false){
         <div className="col-xl-12 mt-4">
           <div className="card">
             <div className="card-body">
-              <div className="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
-                <h3
-                  className="card-title fw-semibold mb-0"
-                  style={{ color: "#F7AE15", margin: 0 }}
-                >
-                  {`Stocks ${name ? "in" : ""} ${
-                    name.charAt(0).toUpperCase() + name.slice(1)
-                  }`}
-                </h3>
-                <div className="d-flex ms-auto">
-                  {" "}
-                  <Select
-                  styles={{
-                    container: (provided) => ({
-                      ...provided,
-                      width: 200, 
-                    }),
-                  }}
-                    key={searchKey}
-                    placeholder="Search by franchise..."
-                    isSearchable={true}
-                    onChange={(selectedOption) => {
-                      setFilter(selectedOption.value);
-                      setName(selectedOption?.label);
-                    }}
-                    required
-                    options={allFranchise?.map((franchise) => ({
-                      value: franchise._id,
-                      label: franchise.franchiseName,
-                    }))}
-                    className="me-2"
-                  />
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setFilter("");
-                      setSearchKey(searchKey + 1);
-                      setName("");
-                    
-                    }}
-                  >
-                    Reset
-                  </Button>
-                </div>
-              </div>
+            <div className="d-flex align-items-center justify-content-between flex-wrap px-4 py-3 border-bottom">
+  <h3
+    className="card-title fw-semibold mb-0 text-warning"
+    style={{ margin: 0 }}
+  >
+    {`Stocks ${name ? "in" : ""} ${
+      name.charAt(0).toUpperCase() + name.slice(1)
+    }`}
+  </h3>
+  <div className="d-flex ms-auto mt-3 mt-md-0">
+    <Select
+      styles={{
+        container: (provided) => ({
+          ...provided,
+          width: 200,
+        }),
+      }}
+      key={searchKey}
+      placeholder="Search by franchise..."
+      isSearchable={true}
+      onChange={(selectedOption) => {
+        setFilter(selectedOption.value);
+        setName(selectedOption?.label);
+      }}
+      required
+      options={allFranchise?.map((franchise) => ({
+        value: franchise._id,
+        label: franchise.franchiseName,
+      }))}
+      className="me-2"
+    />
+    <Button
+      variant="secondary"
+      onClick={() => {
+        setFilter("");
+        setSearchKey(searchKey + 1);
+        setName("");
+      }}
+    >
+      Reset
+    </Button>
+  </div>
+</div>
+
             </div>
 
             {isLoading ? (
@@ -315,6 +314,7 @@ if(addStockModal?.show===false){
                                       ? products?._id
                                       : products?.product?.productId,
                                   });
+                                  setValidated(false);
                                 }}
                               >
                                 <FontAwesomeIcon
@@ -338,6 +338,8 @@ if(addStockModal?.show===false){
                                       ? products?._id
                                       : products?.product?.productId,
                                   });
+                                  setValidated(false);
+
                                 }}
                               >
                                 <FontAwesomeIcon
