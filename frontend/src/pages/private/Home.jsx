@@ -60,7 +60,7 @@ function Home() {
                           className="fw-normal pt-2 mb-1"
                           style={{ color: "white" }}
                         >
-                          {dashboardData?.totalCategories}{" "}
+                          {dashboardData?.totalCategories||"0"}{" "}
                         </h2>
                         <div className="progress progress-bar-alt-success progress-sm">
                           <div
@@ -98,7 +98,7 @@ function Home() {
                           className="fw-normal pt-2 mb-1"
                           style={{ color: "white" }}
                         >
-                          {dashboardData?.totalfranchise}{" "}
+                          {dashboardData?.totalfranchise||"0"}{" "}
                         </h2>
                         <div className="progress progress-bar-alt-success progress-sm">
                           <div
@@ -136,7 +136,7 @@ function Home() {
                           className="fw-normal pt-2 mb-1"
                           style={{ color: "white" }}
                         >
-                          {dashboardData?.totalProducts}{" "}
+                          {dashboardData?.totalProducts||"0"}{" "}
                         </h2>
                         <div className="progress progress-bar-alt-success progress-sm">
                           <div

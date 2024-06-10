@@ -315,6 +315,7 @@ if(addStockModal?.show===false){
                                       ? products?._id
                                       : products?.product?.productId,
                                   });
+                                  setValidated(false);
                                 }}
                               >
                                 <FontAwesomeIcon
@@ -338,6 +339,8 @@ if(addStockModal?.show===false){
                                       ? products?._id
                                       : products?.product?.productId,
                                   });
+                                  setValidated(false);
+
                                 }}
                               >
                                 <FontAwesomeIcon
