@@ -24700,3 +24700,47 @@ custom-btn {
     background-color:#D7A322 !important
 }
   
+
+/* In your CSS file, e.g., sidebar.css or a specific login.css file */
+
+ 
+  body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .account-pages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('/assets/images/background.png') no-repeat center center fixed;
+    background-size: cover;
+  }
+  
+  .container {
+    height: 100%;
+  }
+  
+  .card {
+    margin-top: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .account-pages {
+      padding: 0;
+      min-height: 100vh;
+    }
+  
+    .card {
+      margin-top: 1rem;
+    }
+  
+    .text-center.mb-4 img {
+      width: 70%; /* Adjust as necessary for mobile view */
+    }
+  }
+    
