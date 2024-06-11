@@ -1,6 +1,10 @@
 import { initialize } from "./config/dbConnection.js";
 import admin from "./data/admin.data.js";
 import User from "./models/userModel.js";
+import Franchise from "./models/franchiseModel.js";
+import Category from "./models/categoryModel.js";
+import Product from "./models/productModel.js";
+import Stock from "./models/stockModel.js";
 await initialize();
 const importData = async () => {
   try {
