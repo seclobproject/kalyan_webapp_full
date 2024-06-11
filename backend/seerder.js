@@ -5,6 +5,10 @@ await initialize();
 const importData = async () => {
   try {
     await User.deleteMany();
+    await Franchise.deleteMany();
+    await Category.deleteMany();
+    await Product.deleteMany();
+    await Stock.deleteMany();
     const createdAdmin = await User.insertMany(admin);
     console.log("Data cleared and Imported");
     process.exit();
