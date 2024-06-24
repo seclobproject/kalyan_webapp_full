@@ -133,12 +133,12 @@ export async function getAll(page, limit, query) {
           $options: "i",
         },
       },
-      {
-        "category.categoryName": {
-          $regex: query?.search ? query?.search : "",
-          $options: "i",
-        },
-      },
+      // {
+      //   "category.categoryName": {
+      //     $regex: query?.search ? query?.search : "",
+      //     $options: "i",
+      //   },
+      // },
     ];
   }
 

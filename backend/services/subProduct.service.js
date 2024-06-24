@@ -119,3 +119,39 @@ export async function subProductUpdate(productId, productData) {
   }
 }
 // ----------------------------
+
+//----------- get all products -------------
+
+export async function getAll(page, limit, query) {
+  let queryData = {};
+  if (query?.search) {
+    queryData["$or"] = [
+      { name: { $regex: query?.search ? query?.search : "", $options: "i" } },
+      {
+        productCode: {
+          $regex: query?.search ? query?.search : "",
+          $options: "i",
+        },
+      },
+    ];
+  }
+
+  const products = await subProductModel
+    .find(queryData)
+    .populate([{ path: "stock.franchiseId" }])
+    .skip((toNumber(page) - 1) * toNumber(limit))
+    .limit(toNumber(limit))
+    .sort({ createdAt: -1 });
+
+  const total = await subProductModel.find(queryData).countDocuments();
+  return { products, total };
+}
+// ------------------------------------
+
+//-------- find single subproduct -----------
+
+export async function findSingleSubProduct(productId) {
+  const subProduct = await subProductModel.findById(productId);
+  if (!subProduct) throw new HttpException(404, "product not found");
+  return  subProduct ;
+}

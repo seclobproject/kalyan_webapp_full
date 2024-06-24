@@ -1,6 +1,6 @@
-// add new product
+//------ add new product ------
 
-import {saveSubProduct, subProductUpdate} from '../services/subProduct.service.js'
+import {findSingleSubProduct, getAll, saveSubProduct, subProductUpdate} from '../services/subProduct.service.js'
 export async function createSubProduct(req, res, next) {
   try {
     const subproductData = req.body;
@@ -14,7 +14,7 @@ export async function createSubProduct(req, res, next) {
 }
 
 
-// update a subproduct
+//----- update a subproduct ------
 
 export async function updateSubProduct(req, res, next) {
   try {
@@ -26,6 +26,35 @@ export async function updateSubProduct(req, res, next) {
     res
       .status(200)
       .send({ message: "Product updated successfully", subProduct });
+  } catch (err) {
+    next(err);
+  }
+}
+
+//---- get all subProducts ----
+
+export async function getAllSubProduct(req, res, next) {
+  try {
+    const query = req.query;
+    const page = req.query.page;
+    const limit = req.query.limit || "10";
+    const result = await getAll(page, limit, query);
+
+    res.status(200).send(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+// get single subproduct
+
+export async function getSingleSubProduct(req, res, next) {
+  try {
+    const productId = req.params.id;
+    const result = await findSingleSubProduct(productId);
+
+    res.status(200).send(result);
   } catch (err) {
     next(err);
   }
