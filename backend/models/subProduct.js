@@ -1,7 +1,7 @@
 Schema.Types.ObjectId;
 import mongoose, { Schema, model } from "mongoose";
 
-const productSchema = new Schema(
+const subProductSchema = new Schema(
   {
     name: {
       type: String,
@@ -19,14 +19,15 @@ const productSchema = new Schema(
     price: {
       type: Number,
       required: true,
-      dafault: 0,
+      default: 0,
     },
     quantity: {
       type: Number,
-      dafault: 0,
+      default: 0,
     },
     minimumQuantity: {
       type: Number,
+      required: true,
       default: 0,
     },
     category: {
@@ -38,18 +39,6 @@ const productSchema = new Schema(
         type: String,
       },
     },
-    subProducts: [
-      {
-        subproduct: {
-          type: Schema.Types.ObjectId,
-          ref: "SubProduct",
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
     stock: [
       {
         franchiseId: {
@@ -61,14 +50,10 @@ const productSchema = new Schema(
         },
       },
     ],
-    totalPrice: {
-      type: Number,
-      dafault: 0,
-    },
   },
   { timestamps: true }
 );
 
-const Product = model("Product", productSchema);
+const SubProduct = model("SubProduct", subProductSchema);
 
-export default Product;
+export default SubProduct;

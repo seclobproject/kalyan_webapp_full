@@ -10,6 +10,7 @@ import authRouter from "./routes/authRoute.js";
 import categoryRouter from "./routes/categoryRoute.js";
 import franchiseRouter from "./routes/franchiseRoute.js";
 import productRouter from "./routes/productRoute.js";
+import subProductRouter from "./routes/subProductRoute.js";
 import stockRouter from "./routes/stockRoute.js";
 import dashboardRouter from "./routes/dashboardDataRoute.js";
 
@@ -35,6 +36,7 @@ app.use(
   categoryRouter,
   franchiseRouter,
   productRouter,
+  subProductRouter,
   stockRouter,
   dashboardRouter
 );

@@ -144,7 +144,7 @@ export async function getAll(page, limit, query) {
 
   const products = await productModel
     .find(queryData)
-    .populate([{ path: "stock.storeId" }, { path: "category" }])
+    .populate([{ path: "stock.franchiseId" }, { path: "category" }])
     .skip((toNumber(page) - 1) * toNumber(limit))
     .limit(toNumber(limit))
     .sort({ createdAt: -1 });
