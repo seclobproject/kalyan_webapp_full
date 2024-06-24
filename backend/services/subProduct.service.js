@@ -155,3 +155,38 @@ export async function findSingleSubProduct(productId) {
   if (!subProduct) throw new HttpException(404, "product not found");
   return  subProduct ;
 }
+
+// ------- get filtered product by franchise
+
+export async function findAllSubProductByFranchise(page, limit, franchiseId) {
+  try {
+    const subProducts = await franchiseModel.findById(franchiseId);
+    return { products: subProducts.stock };
+  } catch (error) {
+    throw error;
+  }
+}
+
+//-------- delete a subproduct -----------
+
+export async function deleteSubProduct(productId) {
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    throw new HttpException(400, "Invalid product ID");
+  }
+
+  const product = await subProductModel.findById(productId);
+  if (!product) throw new HttpException(404, "Product not found");
+
+  // const categoryId = product.category.categoryId;
+  // const category = await categoryModel.findById(categoryId);
+  // if (!category) throw new HttpException(404, "Category not found");
+
+  // // Remove the product ID from the category's products array
+  // category.products = category.products.filter(
+  //   (id) => id.toString() !== productId
+  // );
+  // await category.save();
+
+  await subProductModel.findByIdAndDelete(productId);
+  return  product ;
+}
