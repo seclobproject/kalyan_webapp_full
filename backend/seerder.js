@@ -4,6 +4,7 @@ import User from "./models/userModel.js";
 import Franchise from "./models/franchiseModel.js";
 import Category from "./models/categoryModel.js";
 import Product from "./models/productModel.js";
+import SubProduct from "./models/stockModel.js";
 import Stock from "./models/stockModel.js";
 await initialize();
 const importData = async () => {
@@ -12,6 +13,7 @@ const importData = async () => {
     await Franchise.deleteMany();
     await Category.deleteMany();
     await Product.deleteMany();
+    await SubProduct.deleteMany();
     await Stock.deleteMany();
     const createdAdmin = await User.insertMany(admin);
     console.log("Data cleared and Imported");

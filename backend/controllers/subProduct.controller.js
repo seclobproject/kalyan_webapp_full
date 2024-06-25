@@ -1,6 +1,6 @@
 //------ add new product ------
 
-import {findSingleSubProduct, getAll, saveSubProduct, subProductUpdate} from '../services/subProduct.service.js'
+import {deleteSubProduct, findAllSubProductByFranchise, findSingleSubProduct, getAll, saveSubProduct, subProductUpdate} from '../services/subProduct.service.js'
 export async function createSubProduct(req, res, next) {
   try {
     const subproductData = req.body;
@@ -55,6 +55,41 @@ export async function getSingleSubProduct(req, res, next) {
     const result = await findSingleSubProduct(productId);
 
     res.status(200).send(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+//-------- get filtered subproduct by franchise --------
+
+export async function  getAllSubProductByFranchise(req, res, next) {
+  try {
+    const franchiseId = req.query.franchise; 
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10; 
+
+    if (!franchiseId) {
+      return res
+        .status(400)
+        .send({ error: "Missing required parameter: franchise" });
+    }
+
+    const result = await findAllSubProductByFranchise(page, limit, franchiseId);
+
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err); // Log the error for debugging
+    next(err);
+  }
+}
+
+// delete a subproduct
+
+export async function removeSubProduct(req, res, next) {
+  try {
+    const productId = req.params.id;
+    const result = await deleteSubProduct(productId);
+    res.status(200).send({ message: "Product Removed successfully", result });
   } catch (err) {
     next(err);
   }
