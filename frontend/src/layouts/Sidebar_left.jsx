@@ -35,6 +35,8 @@ console.log(drawer);
     "/products": "products",
     "/stocks": "stocks",
     "/stocks-report": "stocks-report",
+    "/sub-products": "sub-products",
+
   };
   const defaultSelectedKey = menuItems[location.pathname] || "dashboard";
   return (
@@ -56,6 +58,9 @@ console.log(drawer);
           </Menu.Item>
           <Menu.Item key="products" icon={<ShoppingOutlined />}>
             <Link to="/products">Products</Link>
+          </Menu.Item>
+          <Menu.Item key="sub-products" icon={<ShoppingOutlined />}>
+            <Link to="/sub-products">Sub Products</Link>
           </Menu.Item>
           <Menu.Item key="stocks" icon={<StockOutlined />}>
             <Link to="/stocks">Stocks</Link>
