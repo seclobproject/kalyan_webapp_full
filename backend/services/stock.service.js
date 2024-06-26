@@ -1,4 +1,5 @@
 import productModel from "../models/productModel.js";
+import subProductModel from "../models/subProduct.js";
 import { HttpException } from "../exceptions/exceptions.js";
 import stockModel from "../models/stockModel.js";
 import franchiseModel from "../models/franchiseModel.js";
@@ -10,10 +11,15 @@ const { toNumber } = lodash;
 export async function addStock(data) {
   try {
     // Find the product by ID
-    const product = await productModel
+    let product = await productModel
       .findById(data.product)
       .populate("stock.franchiseId");
-    if (!product) throw new HttpException(404, "Product not found");
+    if (!product){
+       product = await subProductModel
+        .findById(data.product)
+        .populate("stock.franchiseId");
+        if(!product) throw new HttpException(404, "Product not found");
+    }
 
     // Ensure product.stock is an array
     if (!Array.isArray(product.stock)) {
@@ -54,8 +60,8 @@ export async function addStock(data) {
     };
     const franchiseIndex = await franchiseData.stock.findIndex(
       (stock) =>
-        stock.product.productId &&
-        stock.product.productId.toString() === data.product
+        stock.productId &&
+        stock.productId.toString() === data.product
     );
 
     if (franchiseIndex > -1) {
@@ -91,16 +97,21 @@ export async function addStock(data) {
 //------- out stock -------------
 
 export async function updateStock(data) {
-  const product = await productModel
+  let product = await productModel
     .findById(data.product)
-    .populate("stock.franchiseId");
-  if (!product) throw new HttpException(404, "product not found");
-
+    .populate("stock.franchiseId subProducts.subproduct");
+  if (!product) {
+    product = await subProductModel
+      .findById(data.product)
+      .populate("stock.franchiseId");
+    if (!product) throw new HttpException(404, "Product not found");
+  }
+console.log(product,'product');
   const stockIndex = product.stock.findIndex(
     (stock) =>
       stock.franchiseId._id && stock.franchiseId._id.toString() === data.franchise
   );
-
+console.log(stockIndex,'stock index');
   // Find franchise
   const franchiseData = await franchiseModel.findById(data.franchise);
   if (!franchiseData) throw new HttpException(404, "Franchise not found");
@@ -114,6 +125,17 @@ export async function updateStock(data) {
 
     product.stock[stockIndex].quantity -= data.quantity;
     product.quantity -= data.quantity;
+
+    if (product.subProducts && product.subProducts.length > 0) {
+      for (const subProdInfo of product.subProducts) {
+        const subProd = await subProductModel.findById(subProdInfo.subproduct);
+        if (subProd) {
+          subProd.quantity -= subProdInfo.quantity * data.quantity;
+          await subProd.save();
+        }
+      }
+    }
+
   } else {
     throw new HttpException(404, "Stock not found in specified store");
   }
@@ -126,8 +148,8 @@ export async function updateStock(data) {
   };
   const franchiseIndex = franchiseData.stock.findIndex(
     (stock) =>
-      stock.product.productId &&
-      stock.product.productId.toString() === data.product
+      stock.productId &&
+      stock.productId.toString() === data.product
   );
   
   if (franchiseIndex > -1) {

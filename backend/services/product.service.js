@@ -38,20 +38,20 @@ export async function saveProduct(productData) {
     productData.totalPrice = productData.price * productData.quantity;
   }
 
+  // Find the category by ID and update the products array
+  const category = await categoryModel.findById(
+    productData.category.categoryId
+  );
+  if (!category) throw new HttpException(404, "Category not found");
+
   const product = await productModel.create({
     ...productData,
     quantity: 0,
     stock: [],
   });
 
-  // Find the category by ID and update the products array
-  const category = await categoryModel.findById(
-    productData.category.categoryId 
-  );
-  if (!category) throw new HttpException(404, "Category not found");
-
-  category.products.push(product._id);
-  await category.save();
+    category.products.push(product._id);
+    await category.save();
 
   return { product };
 }
@@ -61,6 +61,7 @@ export async function saveProduct(productData) {
 //--------- update product --------
 
 export async function productUpdate(productId, productData) {
+  console.log(productData,"productData");
   try {
     if (productData.name) {
       const findProduct = await productModel.findOne({
@@ -70,19 +71,19 @@ export async function productUpdate(productId, productData) {
         throw new HttpException(400, "Product with this name already exists");
       }
     }
-      if (productData.productCode) {
-        const findProductByCode = await productModel.findOne({
-          productCode: {
-            $regex: new RegExp("^" + productData.productCode + "$", "i"),
-          },
-        });
+    if (productData.productCode) {
+      const findProductByCode = await productModel.findOne({
+        productCode: {
+          $regex: new RegExp("^" + productData.productCode + "$", "i"),
+        },
+      });
 
-        if (findProductByCode && findProductByCode._id.toString() !== productId)
-          throw new HttpException(
-            400,
-            "Product with this product code already exists"
-          );
-      }
+      if (findProductByCode && findProductByCode._id.toString() !== productId)
+        throw new HttpException(
+          400,
+          "Product with this product code already exists"
+        );
+    }
     const product = await productModel.findByIdAndUpdate(
       productId,
       productData,
@@ -94,19 +95,18 @@ export async function productUpdate(productId, productData) {
 
     // Update the franchise stock details
     const franchises = await franchiseModel.find({
-      "stock.product.productId": productId,
+      "stock.productId": productId,
     });
 
     for (const franchise of franchises) {
       for (const stockItem of franchise.stock) {
-        if (stockItem.product.productId.toString() === productId) {
-          if (productData.name)
-            stockItem.product.productName = productData.name;
+        if (stockItem.productId.toString() === productId) {
+          if (productData.name) stockItem.productName = productData.name;
           if (productData.productCode)
-            stockItem.product.productCode = productData.productCode;
-          if (productData.price) stockItem.product.price = productData.price;
+            stockItem.productCode = productData.productCode;
+          if (productData.price) stockItem.price = productData.price;
           if (productData.category && productData.category.categoryName) {
-            stockItem.product.categoryName = productData.category.categoryName;
+            stockItem.categoryName = productData.category.categoryName;
           }
         }
       }
@@ -119,7 +119,7 @@ export async function productUpdate(productId, productData) {
   }
 }
 // ----------------------------
-      
+
 //----------- get all products -------------
 
 export async function getAll(page, limit, query) {
@@ -159,7 +159,7 @@ export async function getAll(page, limit, query) {
 export async function findAllProductByFranchise(page, limit, franchiseId) {
   try {
     const products = await franchiseModel.findById(franchiseId);
-    return { products:products.stock };
+    return { products: products.stock };
   } catch (error) {
     throw error;
   }
@@ -179,7 +179,7 @@ export async function deleteProduct(productId) {
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     throw new HttpException(400, "Invalid product ID");
   }
- 
+
   const product = await productModel.findById(productId);
   if (!product) throw new HttpException(404, "Product not found");
 

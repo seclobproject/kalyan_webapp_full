@@ -4,7 +4,7 @@ import User from "./models/userModel.js";
 import Franchise from "./models/franchiseModel.js";
 import Category from "./models/categoryModel.js";
 import Product from "./models/productModel.js";
-import SubProduct from "./models/stockModel.js";
+import SubProduct from "./models/subProduct.js";
 import Stock from "./models/stockModel.js";
 await initialize();
 const importData = async () => {

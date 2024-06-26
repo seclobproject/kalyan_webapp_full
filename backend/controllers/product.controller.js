@@ -7,7 +7,7 @@ import {
   saveProduct,
 } from "../services/product.service.js";
 
-// add new product
+//------ add new product -------
 
 export async function createProduct(req, res, next) {
   try {
@@ -19,7 +19,7 @@ export async function createProduct(req, res, next) {
   }
 }
 
-// update a product
+//------- update a product --------
 
 export async function updateProduct(req, res, next) {
   try {
@@ -34,7 +34,7 @@ export async function updateProduct(req, res, next) {
   }
 }
 
-// get all products
+//-------- get all products ---------
 
 export async function getAllProduct(req, res, next) {
   try {
@@ -49,7 +49,8 @@ export async function getAllProduct(req, res, next) {
   }
 }
 
-// get filtered product by category
+//-------- get filtered product by category ---------
+
 export async function getAllProductByFranchise(req, res, next) {
   try {
     const franchiseId = req.query.franchise; 
@@ -71,7 +72,7 @@ export async function getAllProductByFranchise(req, res, next) {
   }
 }
 
-// get single product
+//-------- get single product -----------
 
 export async function getSingleProduct(req, res, next) {
   try {

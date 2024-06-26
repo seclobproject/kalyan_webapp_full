@@ -47,7 +47,7 @@ export async function getAllSubProduct(req, res, next) {
 }
 
 
-// get single subproduct
+//------ get single subproduct -------
 
 export async function getSingleSubProduct(req, res, next) {
   try {

@@ -94,7 +94,7 @@ export async function subProductUpdate(productId, productData) {
 
     // Update the franchise stock details
     const franchises = await franchiseModel.find({
-      "stock.product.productId": productId,
+      "stock.productId": productId,
     });
 
     for (const franchise of franchises) {
@@ -138,7 +138,7 @@ export async function getAll(page, limit, query) {
 
   const products = await subProductModel
     .find(queryData)
-    .populate([{ path: "stock.franchiseId" }])
+    // .populate([{ path: "stock.franchiseId" }])
     .skip((toNumber(page) - 1) * toNumber(limit))
     .limit(toNumber(limit))
     .sort({ createdAt: -1 });
