@@ -8,6 +8,7 @@ import Franchise from './pages/private/Franchise'
 import Products from './pages/private/Products'
 import Stock from './pages/private/Stock'
 import StockReport from './pages/private/StockReport'
+import Subproducts from './pages/private/Subproducts'
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path='/products' element={<Products/>} />
           <Route path='/stocks' element={<Stock/>} />
           <Route path='/stocks-report' element={<StockReport/>} />
+          <Route path='/sub-products' element={<Subproducts/>} />
 
         </Route>
       </Routes>
