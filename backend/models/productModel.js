@@ -43,10 +43,12 @@ const productSchema = new Schema(
         subproduct: {
           type: Schema.Types.ObjectId,
           ref: "SubProduct",
+          required:true
         },
         quantity: {
           type: Number,
           required: true,
+          
         },
       },
     ],

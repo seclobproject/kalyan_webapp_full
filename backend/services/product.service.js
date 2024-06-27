@@ -144,7 +144,11 @@ export async function getAll(page, limit, query) {
 
   const products = await productModel
     .find(queryData)
-    .populate([{ path: "stock.franchiseId" }, { path: "category" }])
+    .populate([
+      { path: "stock.franchiseId" },
+      { path: "category" },
+      { path: "subProducts.subproduct", select: "name" },
+    ])
     .skip((toNumber(page) - 1) * toNumber(limit))
     .limit(toNumber(limit))
     .sort({ createdAt: -1 });

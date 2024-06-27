@@ -65,7 +65,7 @@ export async function addStock(data) {
     );
 
     if (franchiseIndex > -1) {
-      franchiseData.stock[franchiseIndex].product.quantity += data.quantity;
+      franchiseData.stock[franchiseIndex].quantity += data.quantity;
     } else {
       franchiseData.stock.push({
         product: productDetails,
@@ -106,15 +106,50 @@ export async function updateStock(data) {
       .populate("stock.franchiseId");
     if (!product) throw new HttpException(404, "Product not found");
   }
-console.log(product,'product');
+  console.log(product, "product");
   const stockIndex = product.stock.findIndex(
     (stock) =>
-      stock.franchiseId._id && stock.franchiseId._id.toString() === data.franchise
+      stock.franchiseId._id &&
+      stock.franchiseId._id.toString() === data.franchise
   );
-console.log(stockIndex,'stock index');
-  // Find franchise
+  console.log(stockIndex, "stock index");
+
+  //----- Find franchise -------
+  
   const franchiseData = await franchiseModel.findById(data.franchise);
   if (!franchiseData) throw new HttpException(404, "Franchise not found");
+
+  //----- Check for sub-product stock in the franchise -------
+
+  if (product.subProducts && product.subProducts.length > 0) {
+    for (const subProdInfo of product.subProducts) {
+      const subProd = await subProductModel.findById(subProdInfo.subproduct);
+      if (subProd) {
+        const subProdStockIndex = subProd.stock.findIndex(
+          (stock) =>
+            stock.franchiseId._id &&
+            stock.franchiseId._id.toString() === data.franchise
+        );
+
+        if (subProdStockIndex > -1) {
+          if (
+            subProd.stock[subProdStockIndex].quantity <
+            subProdInfo.quantity * data.quantity
+          ) {
+            throw new HttpException(
+              400,
+              `Insufficient stock for sub-product: ${subProd.name}`
+            );
+          }
+        } else {
+          throw new HttpException(
+            404,
+            `Sub-product stock not found in specified store for sub-product: ${subProd.name}`
+          );
+        }
+      }
+    }
+  }
 
   if (stockIndex > -1) {
     if (product.stock[stockIndex].quantity < data.quantity) {
@@ -135,7 +170,6 @@ console.log(stockIndex,'stock index');
         }
       }
     }
-
   } else {
     throw new HttpException(404, "Stock not found in specified store");
   }
@@ -147,23 +181,21 @@ console.log(stockIndex,'stock index');
     franchiseName: franchiseData.franchiseName,
   };
   const franchiseIndex = franchiseData.stock.findIndex(
-    (stock) =>
-      stock.productId &&
-      stock.productId.toString() === data.product
+    (stock) => stock.productId && stock.productId.toString() === data.product
   );
-  
+
   if (franchiseIndex > -1) {
-    franchiseData.stock[franchiseIndex].product.quantity -= data.quantity;
+    franchiseData.stock[franchiseIndex].quantity -= data.quantity;
   }
   const updatedFranchise = await franchiseData.save();
 
-    const productDetails = {
-      productId: product._id,
-      productName: product.name,
-      productCode: product.productCode,
-      categoryName: product.category.categoryName,
-      price: product.price,
-    };
+  const productDetails = {
+    productId: product._id,
+    productName: product.name,
+    productCode: product.productCode,
+    categoryName: product.category.categoryName,
+    price: product.price,
+  };
 
   const stock = new stockModel({
     product: productDetails,
