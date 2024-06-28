@@ -41,7 +41,7 @@ function Stock() {
   const [filter, setFilter] = useState();
   const [name, setName] = useState("");
   const [searchKey, setSearchKey] = useState(0);
-  const [onSearch, setOnSerach] = useState();
+  const [onSearch, setOnSerach] = useState('');
 
   //get franchise
   const getAllFranchises = async () => {
@@ -63,7 +63,7 @@ function Stock() {
   const getAllProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiCall("get", `${getProductUrl}?${onSearch}`, {}, params);
+      const response = await ApiCall("get", `${getProductUrl}?search=${onSearch||'KALYAN MAIN HUB'}`, {}, params);
       if (response.status === 200) {
         setAllProducts(response?.data?.products);
         setIsLoading(false);
@@ -81,7 +81,7 @@ function Stock() {
     setIsLoading(true);
     try {
       const response = await ApiCall("get", `${productFilterUrl}${filter}`);
-
+console.log(response,"res");
       if (response.status === 200) {
         setAllProducts(response?.data?.products);
         setIsLoading(false);
@@ -213,7 +213,6 @@ if(addStockModal?.show===false){
   <div className="d-flex flex-wrap flex-md-nowrap ms-auto ">
   <input
     className="me-2 mb-2 mb-md-0 form-control"
-    key={searchKey}
     placeholder="Search by product..."
     value={onSearch}
     onChange={(e) => {
@@ -285,6 +284,7 @@ if(addStockModal?.show===false){
                     {allProducts?.length ? (
                       <>
                         {allProducts?.map((products, index) => (
+                          console.log("log",allProducts),
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>
