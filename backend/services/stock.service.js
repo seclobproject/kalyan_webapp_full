@@ -39,7 +39,7 @@ export async function addStock(data) {
       franchiseData.stock = [];
     }
     const stockIndex = await product.stock.findIndex(
-      (stock) => stock.franchiseId._id && stock.franchiseId._id.toString() === data.franchise
+      (stock) => stock.franchiseId && stock.franchiseId.toString() === data.franchise
     );
     if (stockIndex > -1) {
       product.stock[stockIndex].quantity += data.quantity;
@@ -68,11 +68,16 @@ export async function addStock(data) {
       franchiseData.stock[franchiseIndex].quantity += data.quantity;
     } else {
       franchiseData.stock.push({
-        product: productDetails,
+        productId: product._id,
+        productName: product.name,
+        productCode: product.productCode,
+        categoryName: product.category.categoryName,
+        quantity: data.quantity,
+        price: product.price,
       });
     }
     const updatedFranchise = await franchiseData.save();
-
+console.log(updatedFranchise);
     const stock = new stockModel({
       product: productDetails,
       franchise: {
@@ -106,13 +111,11 @@ export async function updateStock(data) {
       .populate("stock.franchiseId");
     if (!product) throw new HttpException(404, "Product not found");
   }
-  console.log(product, "product");
   const stockIndex = product.stock.findIndex(
     (stock) =>
       stock.franchiseId._id &&
       stock.franchiseId._id.toString() === data.franchise
   );
-  console.log(stockIndex, "stock index");
 
   //----- Find franchise -------
   
