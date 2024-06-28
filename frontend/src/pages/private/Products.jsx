@@ -18,21 +18,16 @@ function Products() {
   });
   const [validated, setValidated] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
-  console.log("al",allProducts);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
+  const [subProductModal, setSubProductModal] = useState({ show: false, sub:'' });
   const [allCategory, setAllCatgeory] = useState([]);
   const [allFranchise, setAllFranchise] = useState([]);
   const [addProductData, setAddProductData] = useState({
   });
-  console.log("dataa for api")
-  const [additionalInput, setAdditionalInput] = useState(1);
   const [addSubProductData, setSubAddProductData] = useState({
-    // subProducts: [
-    //   { subproduct: '', quantity: 0 },
-    // ],   
+    
   });
-  const subProducts = [];
   console.log(addSubProductData,"addSubProductData");
 
   console.log(addProductData,"data");
@@ -40,12 +35,8 @@ function Products() {
     page: 1,
     pageSize: 1,
   });
-  const [totalPages, setTotalPages] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
   const { Check_Validation } = useContext(MyContext);
-  const [filter, setFilter] = useState();
-  // const [allSubProduct,SetAllSubProducts]=useState([]);
-  const [allSubProduct, setAllSubProduct] = useState([]); // Assuming this comes from props or API call
+  const [allSubProduct, setAllSubProduct] = useState([]); 
 
   //get all products
   const getAllProducts = async () => {
@@ -179,7 +170,7 @@ function Products() {
   }
 };
 
-    // delete catgeory
+   // delete catgeory
   const deleteProducts = async () => {
       try {
         const response = await ApiCall(
@@ -197,46 +188,17 @@ function Products() {
         console.error("Error in deleting :", error);
       }
   };
-  const handlePageChange = (event, newPage) => {
-    setParams((prevParams) => ({
-      ...prevParams,
-      page: newPage,
-    }));
-  };
-  // const handleFilterAndSetFilterStatus = (e) => {
-  //   const filterStatus = e.target.value;
-
-  //   setFilter(filterStatus);
-  //   const newFilteredData = allUser.filter((item) => {
-  //     return filterStatus ? item.userStatus === filterStatus : true;
-  //   });
-  //   setFilteredData(newFilteredData);
-  // };
 
 
-  const handleSubProductChange = (e) => {
-    const newSubProduct = e.target.value;
-    setSubAddProductData((prevState) => {
-      const updatedSubProducts = [...(prevState.subProducts || [])];
-      updatedSubProducts[0] = { ...updatedSubProducts[0], subproduct: newSubProduct };
-      return { ...prevState, subProducts: updatedSubProducts };
-    });
-  };
-  const handleQuantityChange = (e) => {
-    const newQuantity = e.target.value;
-    setSubAddProductData((prevState) => {
-      const updatedSubProducts = [...(prevState.subProducts || [])];
-      updatedSubProducts[0] = { ...updatedSubProducts[0], quantity: newQuantity === '' ? '' : Number(newQuantity) };
-      return { ...prevState, subProducts: updatedSubProducts };
-    });
-  };
+
+
+
 
 
   const [subProductList, setSubProductList] = useState([
     { subproduct: '', quantity: '' },
   ]);
 
-  console.log(subProductList,"lisy");
 
   const handleAddInput = () => {
     setSubProductList([
@@ -262,20 +224,19 @@ function Products() {
     subProductList.forEach(subProduct => {
       subProductsArray.push(subProduct);
     });
-    // Setting the addProductData with the new subProducts array
     setAddProductData(prevState => ({
       ...prevState,
       subProducts: subProductsArray
     }));
     return subProductsArray;
   };
+
   useEffect(() => {
     getAllCategory();
     getAllFranchises();
     getAllSubProducts();
-getAllProducts();
+    getAllProducts();
    
-
   }, [params,]);
   return (
     <>
@@ -296,6 +257,9 @@ getAllProducts();
           setAddProductModal({ show: true });
           setAddProductData({});
           setValidated(false);
+          setSubProductList([
+            { subproduct: '', quantity: '' },
+          ]);
         }}
       >
         Add Products
@@ -357,7 +321,16 @@ getAllProducts();
                               <td>
                                 {products?.price}
                               </td>
-                              <td><i></i></td>
+                              <td> <i class="fas fa-eye"
+                               onClick={() => {
+                                setSubProductModal({
+                                  show: true,
+                                  sub: products?.subProducts,
+productName:products?.name
+                                  
+                                });
+                              }}
+                              ></i></td>
                           
                               <td>
   
@@ -368,6 +341,7 @@ getAllProducts();
           id: products?._id,
         });
         setAddProductData(products);
+        setSubAddProductData(products?.subPro)
       }}
       style={{ cursor: 'pointer',color: "red"  }}
       ></i>
@@ -441,27 +415,7 @@ getAllProducts();
   onSubmit={(e) => Check_Validation(e,addOrEditproducts, setValidated)}
 >
   <div className="d-flex mb-2">
-  <div className="flex-grow-1 me-2">
-      <label htmlFor="productCode" className="form-label">
-        Product Code
-      </label>
-      <input
-        id="productCode"
-        className="form-control"
-        placeholder="Enter product code"
-        value={addProductData?.minimumQuantity}
-        onChange={(e) => {
-          setAddProductData({
-            ...addProductData,
-            minimumQuantity: e.target.value,
-          });
-        }}
-        required
-      />
-      <Form.Control.Feedback type="invalid">
-        Please enter Product code.
-      </Form.Control.Feedback>
-    </div>
+  
   <div className="flex-grow-1 me-2">
       <label htmlFor="productCode" className="form-label">
         Product Code
@@ -480,10 +434,10 @@ getAllProducts();
         required
       />
       <Form.Control.Feedback type="invalid">
-        Please enter Product code.
+        Please enter product code.
       </Form.Control.Feedback>
     </div>
-    <div className=" flex-grow-1">
+    <div className=" flex-grow-1 me-2">
       <label htmlFor="productName" className="form-label">
         Product Name
       </label>
@@ -502,6 +456,27 @@ getAllProducts();
       />
       <Form.Control.Feedback type="invalid">
         Please enter product name.
+      </Form.Control.Feedback>
+    </div>
+    <div className="flex-grow-1 ">
+      <label htmlFor="productCode" className="form-label">
+      Product Minimum Quantity
+      </label>
+      <input
+        id="productCode"
+        className="form-control"
+        placeholder="Enter minimum quantity"
+        value={addProductData?.minimumQuantity}
+        onChange={(e) => {
+          setAddProductData({
+            ...addProductData,
+            minimumQuantity: e.target.value,
+          });
+        }}
+        required
+      />
+      <Form.Control.Feedback type="invalid">
+        Please enter minimum quantity.
       </Form.Control.Feedback>
     </div>
    
@@ -615,6 +590,9 @@ getAllProducts();
                 </option>
               ))}
             </select>
+            <Form.Control.Feedback type="invalid">
+        Please select a sub product.
+      </Form.Control.Feedback>
           </div>
           <div className="flex-grow-1">
             <label className="form-label">
@@ -634,6 +612,9 @@ getAllProducts();
               }
               required
             />
+              <Form.Control.Feedback type="invalid">
+        Please enter a quantity.
+      </Form.Control.Feedback>
           </div>
           {subProductList.length > 1 && (
             <div className="align-self-end">
@@ -740,6 +721,73 @@ getAllProducts();
             </Button>
           </div>
         </div>
+      </ModalComponent>
+      <ModalComponent
+        show={subProductModal.show}
+        onHide={() => {
+          setSubProductModal({ show: false, id: null });
+        }} 
+        title={<h4 style={{ color: "#F7AE15", margin: 0 }}> Sub Products in {subProductModal?.productName}</h4>}
+
+        centered
+        width={"500px"}
+      >
+        <div className="modal-body">
+        <div className="table-responsive" style={{padding:'12px'}}>
+                <table className="table table-hover mb-0">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Sl.no</th>
+                  
+                      <th>Sub Product Name</th>
+
+                    
+                      <th>Quantity</th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {subProductModal?.sub?.length ? (
+                        <>
+                          {subProductModal?.sub?.map((products, index) => (
+                                                          console.log(products,"products products"),
+
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                             
+                              <td>
+                                {products?.subproduct?.name.toUpperCase()}
+                              </td>  
+                              
+                               
+                              
+  
+<td style={{ color: products.minimumQuantity < 5 ? 'red' : 'green' }}>
+  {products.quantity}
+</td>
+
+                             
+                            
+                          
+  
+                        
+
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan={20} style={{ textAlign: "center" }}>
+                            <b>No Sub Products Found</b>{" "}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                </table>
+              </div>
+        </div>
+
+      
       </ModalComponent>
     </>
   );
