@@ -61,7 +61,6 @@ export async function saveProduct(productData) {
 //--------- update product --------
 
 export async function productUpdate(productId, productData) {
-  console.log(productData,"productData");
   try {
     if (productData.name) {
       const findProduct = await productModel.findOne({
