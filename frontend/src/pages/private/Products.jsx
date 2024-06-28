@@ -5,7 +5,7 @@ import Loader from "../../Components/Loader";
 import { MyContext } from "../../Services/Context";
 import ModalComponent from "../../Components/ModalComponents";
 import { ApiCall } from "../../Services/Api";
-import { addProductURl, deleteProductUrl, editProductUrl, getAllCategoryUrl, getAllFranchiseUrl, getProductUrl, productFilterUrl } from "../../../Utils/Constants";
+import { addProductURl, deleteProductUrl, editProductUrl, getAllCategoryUrl, getAllFranchiseUrl, getAllSubproductUrl, getProductUrl, productFilterUrl } from "../../../Utils/Constants";
 import toast from "react-hot-toast";
 import Pagination from "@mui/material/Pagination";
 import { Stack } from "@mui/material";
@@ -18,23 +18,25 @@ function Products() {
   });
   const [validated, setValidated] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
-  console.log("al",allProducts);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
+  const [subProductModal, setSubProductModal] = useState({ show: false, sub:'' });
   const [allCategory, setAllCatgeory] = useState([]);
   const [allFranchise, setAllFranchise] = useState([]);
   const [addProductData, setAddProductData] = useState({
-    quantity:0
+  });
+  const [addSubProductData, setSubAddProductData] = useState({
     
   });
+  console.log(addSubProductData,"addSubProductData");
+
+  console.log(addProductData,"data");
   const [params, setParams] = useState({
     page: 1,
     pageSize: 1,
   });
-  const [totalPages, setTotalPages] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
   const { Check_Validation } = useContext(MyContext);
-  const [filter, setFilter] = useState();
+  const [allSubProduct, setAllSubProduct] = useState([]); 
 
   //get all products
   const getAllProducts = async () => {
@@ -74,12 +76,15 @@ function Products() {
   const addOrEditproducts = async (e) => {
     setIsLoading(true);
     setIsLoadingButton(true);
+
     try {
+      const subProductsArray = handleSubmit();
+      const newProductData = { ...addProductData, subProducts: subProductsArray };
       if (addProductData?._id) {
         const response = await ApiCall(
           "put",
           `${editProductUrl}/${addProductData?._id}`,
-          addProductData
+          newProductData
         );
         if (response.status === 200) {
           setAddProductModal(false);
@@ -96,14 +101,22 @@ function Products() {
           getAllProducts()
         }
       } else {
-        const response = await ApiCall("post", addProductURl, addProductData);
+      
+        // handleSubmit();
+        const response = await ApiCall("post", addProductURl, newProductData);
         if (response.status === 200) {
           setAddProductModal(false);
+          setSubProductList([
+            { subproduct: '', quantity: '' },
+          ]);
           setIsLoadingButton(false);
           setValidated(false);
           getAllProducts()
           toast.success(response?.data?.message);
         } else {
+          setSubProductList([
+             { subproduct: '', quantity: '' },
+          ]);
           setIsLoading(false);
           setIsLoadingButton(false);
           setValidated(false);
@@ -139,7 +152,25 @@ function Products() {
     }
   };
 
-    // delete catgeory
+     //get all sub products
+ const getAllSubProducts = async () => {
+  try {
+    setIsLoading(true);
+    const response = await ApiCall("get", getAllSubproductUrl);
+    if (response.status === 200) {
+      console.log(response,"res..");
+      setAllSubProduct(response?.data?.products);
+      setIsLoading(false);
+    } else {
+      console.error("Error fetching sub products list");
+      setIsLoading(false);
+    }
+  } catch (error) {
+    console.error("Error fetching sub products list:", error);
+  }
+};
+
+   // delete catgeory
   const deleteProducts = async () => {
       try {
         const response = await ApiCall(
@@ -157,27 +188,55 @@ function Products() {
         console.error("Error in deleting :", error);
       }
   };
-  const handlePageChange = (event, newPage) => {
-    setParams((prevParams) => ({
-      ...prevParams,
-      page: newPage,
-    }));
-  };
-  // const handleFilterAndSetFilterStatus = (e) => {
-  //   const filterStatus = e.target.value;
 
-  //   setFilter(filterStatus);
-  //   const newFilteredData = allUser.filter((item) => {
-  //     return filterStatus ? item.userStatus === filterStatus : true;
-  //   });
-  //   setFilteredData(newFilteredData);
-  // };
+
+
+
+
+
+
+  const [subProductList, setSubProductList] = useState([
+    { subproduct: '', quantity: '' },
+  ]);
+
+
+  const handleAddInput = () => {
+    setSubProductList([
+      ...subProductList,
+      { subproduct: '', quantity: '' },
+    ]);
+  };
+  const handleRemoveInput = (index) => {
+    const newSubProductList = subProductList.filter((_, i) => i !== index);
+    setSubProductList(newSubProductList);
+  };
+
+
+  const handleInputChange = (index, field, value) => {
+    const newSubProductList = [...subProductList];
+    newSubProductList[index][field] = value;
+    setSubProductList(newSubProductList);
+  };
+
+
+  const handleSubmit = () => {
+    const subProductsArray = [];
+    subProductList.forEach(subProduct => {
+      subProductsArray.push(subProduct);
+    });
+    setAddProductData(prevState => ({
+      ...prevState,
+      subProducts: subProductsArray
+    }));
+    return subProductsArray;
+  };
+
   useEffect(() => {
     getAllCategory();
     getAllFranchises();
-getAllProducts();
+    getAllSubProducts();
+    getAllProducts();
    
-
   }, [params,]);
   return (
     <>
@@ -198,6 +257,9 @@ getAllProducts();
           setAddProductModal({ show: true });
           setAddProductData({});
           setValidated(false);
+          setSubProductList([
+            { subproduct: '', quantity: '' },
+          ]);
         }}
       >
         Add Products
@@ -224,6 +286,7 @@ getAllProducts();
                       <th>Description</th>
                       <th>Quantity</th>
                       <th>Price</th>
+                      <th>View Sub products</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -251,12 +314,23 @@ getAllProducts();
                               <td style={{ width: "300px", height: "100px", overflow: "hidden", whiteSpace: "pre-wrap" }}>
   <p style={{ margin: 0 }}>  {products?.description}</p>
 </td>
-                              <td>
-                                {products?.quantity}
-                              </td>
+<td style={{ color: products.minimumQuantity < 5 ? 'red' : 'green' }}>
+  {products.quantity}
+</td>
+
                               <td>
                                 {products?.price}
                               </td>
+                              <td> <i class="fas fa-eye"
+                               onClick={() => {
+                                setSubProductModal({
+                                  show: true,
+                                  sub: products?.subProducts,
+productName:products?.name
+                                  
+                                });
+                              }}
+                              ></i></td>
                           
                               <td>
   
@@ -267,6 +341,7 @@ getAllProducts();
           id: products?._id,
         });
         setAddProductData(products);
+        setSubAddProductData(products?.subPro)
       }}
       style={{ cursor: 'pointer',color: "red"  }}
       ></i>
@@ -340,6 +415,7 @@ getAllProducts();
   onSubmit={(e) => Check_Validation(e,addOrEditproducts, setValidated)}
 >
   <div className="d-flex mb-2">
+  
   <div className="flex-grow-1 me-2">
       <label htmlFor="productCode" className="form-label">
         Product Code
@@ -358,10 +434,10 @@ getAllProducts();
         required
       />
       <Form.Control.Feedback type="invalid">
-        Please enter Product code.
+        Please enter product code.
       </Form.Control.Feedback>
     </div>
-    <div className=" flex-grow-1">
+    <div className=" flex-grow-1 me-2">
       <label htmlFor="productName" className="form-label">
         Product Name
       </label>
@@ -380,6 +456,27 @@ getAllProducts();
       />
       <Form.Control.Feedback type="invalid">
         Please enter product name.
+      </Form.Control.Feedback>
+    </div>
+    <div className="flex-grow-1 ">
+      <label htmlFor="productCode" className="form-label">
+      Product Minimum Quantity
+      </label>
+      <input
+        id="productCode"
+        className="form-control"
+        placeholder="Enter minimum quantity"
+        value={addProductData?.minimumQuantity}
+        onChange={(e) => {
+          setAddProductData({
+            ...addProductData,
+            minimumQuantity: e.target.value,
+          });
+        }}
+        required
+      />
+      <Form.Control.Feedback type="invalid">
+        Please enter minimum quantity.
       </Form.Control.Feedback>
     </div>
    
@@ -468,8 +565,78 @@ getAllProducts();
         Please enter product description.
       </Form.Control.Feedback>
     </div>
+    <div
+              className="mt-3"
+              style={{ border: "1px solid ", height: "1px", color: "#F7AE15" }}
+            ></div>
+    {subProductList.map((subProduct, index) => (
+        <div className="d-flex mb-3 mt-3" key={index}>
+          <div className="flex-grow-1 me-2">
+            <label className="form-label">
+              Sub Product
+            </label>
+            <select
+              className="form-control"
+              value={subProduct.subproduct}
+              onChange={(e) =>
+                handleInputChange(index, 'subproduct', e.target.value)
+              }
+              required
+            >
+              <option value="">Select franchise name</option>
+              {allSubProduct.map((sub, subIndex) => (
+                <option key={subIndex} value={sub._id}>
+                  {sub.name}
+                </option>
+              ))}
+            </select>
+            <Form.Control.Feedback type="invalid">
+        Please select a sub product.
+      </Form.Control.Feedback>
+          </div>
+          <div className="flex-grow-1">
+            <label className="form-label">
+              Sub Product Quantity
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Enter a quantity"
+              value={subProduct.quantity}
+              onChange={(e) =>
+                handleInputChange(
+                  index,
+                  'quantity',
+                  e.target.value === '' ? '' : Number(e.target.value)
+                )
+              }
+              required
+            />
+              <Form.Control.Feedback type="invalid">
+        Please enter a quantity.
+      </Form.Control.Feedback>
+          </div>
+          {subProductList.length > 1 && (
+            <div className="align-self-end">
+              <i 
+                className="fs-4 fas fa-trash-alt ms-2 text-danger cursor-pointer" 
+                onClick={() => handleRemoveInput(index)}
+                style={{ fontSize: '1.5rem' }}
+              ></i>
+            </div>
+          )}
+        </div>
+      ))}
+        
+     
 
-  <div className="col-12 mt-4">
+      
+        <Button type="button" className="btn btn-primary" onClick={handleAddInput}>
+        <i className="fas fa-plus"></i> Add More
+      </Button>      
+ 
+
+ <div className="col-12 mt-5">
     <Button
       type="submit"
       className="btn btn-custom float-end ms-1"
@@ -554,6 +721,73 @@ getAllProducts();
             </Button>
           </div>
         </div>
+      </ModalComponent>
+      <ModalComponent
+        show={subProductModal.show}
+        onHide={() => {
+          setSubProductModal({ show: false, id: null });
+        }} 
+        title={<h4 style={{ color: "#F7AE15", margin: 0 }}> Sub Products in {subProductModal?.productName}</h4>}
+
+        centered
+        width={"500px"}
+      >
+        <div className="modal-body">
+        <div className="table-responsive" style={{padding:'12px'}}>
+                <table className="table table-hover mb-0">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Sl.no</th>
+                  
+                      <th>Sub Product Name</th>
+
+                    
+                      <th>Quantity</th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {subProductModal?.sub?.length ? (
+                        <>
+                          {subProductModal?.sub?.map((products, index) => (
+                                                          console.log(products,"products products"),
+
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                             
+                              <td>
+                                {products?.subproduct?.name.toUpperCase()}
+                              </td>  
+                              
+                               
+                              
+  
+<td style={{ color: products.minimumQuantity < 5 ? 'red' : 'green' }}>
+  {products.quantity}
+</td>
+
+                             
+                            
+                          
+  
+                        
+
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan={20} style={{ textAlign: "center" }}>
+                            <b>No Sub Products Found</b>{" "}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                </table>
+              </div>
+        </div>
+
+      
       </ModalComponent>
     </>
   );

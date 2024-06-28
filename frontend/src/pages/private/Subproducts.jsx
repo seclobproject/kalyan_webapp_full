@@ -243,7 +243,7 @@ useEffect(()=>{
                       ) : (
                         <tr>
                           <td colSpan={20} style={{ textAlign: "center" }}>
-                            <b>No Products Found</b>{" "}
+                            <b>No Sub Products Found</b>{" "}
                           </td>
                         </tr>
                       )}
