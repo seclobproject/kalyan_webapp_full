@@ -18,6 +18,7 @@ function Subproducts() {
         show: false,
         id: null,
       });
+      console.log(addSubProductModal,"tets");
       const { Check_Validation } = useContext(MyContext);
       const [allSubProduct,SetAllSubProducts]=useState([]);
       const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
