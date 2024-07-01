@@ -29,11 +29,14 @@ function Products() {
   const [validated, setValidated] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
+  const [addSubModal, setAddSubModal] = useState({ show: false, id: null });
+
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
   const [subProductModal, setSubProductModal] = useState({
     show: false,
     sub: "",
     isedit: false,
+    isadd: false,
   });
   const [subProductModals, setSubProductModals] = useState({});
   console.log(subProductModal, "subProductModal");
@@ -55,6 +58,7 @@ function Products() {
   const [subProductList, setSubProductList] = useState([
     { subproduct: "", quantity: "" },
   ]);
+  console.log(subProductList, "qew");
   const [currentEditIndex, setCurrentEditIndex] = useState(null);
 
   //get all products
@@ -202,9 +206,6 @@ function Products() {
     }
   };
 
- 
-
-
   const handleAddInput = () => {
     setSubProductList([...subProductList, { subproduct: "", quantity: "" }]);
   };
@@ -230,7 +231,6 @@ function Products() {
     }));
     return subProductsArray;
   };
-
 
   useEffect(() => {
     if (subProductModal.isedit && currentEditIndex !== null) {
@@ -269,20 +269,54 @@ function Products() {
       if (response?.status === 200) {
         toast.success("Sub Product updated successfully");
         setSubProductModal(false);
+        getAllProducts();
         setIsLoadingButton(false);
-
       } else {
         setAddProductModal(false);
         setIsLoadingButton(false);
-
         toast.error(response?.message);
       }
     } catch (error) {
       console.error("Error updating subproducts:", error);
-    }
-    finally{
+    } finally {
       setIsLoadingButton(false);
+    }
+  };
 
+  const deleteSubs = async (index) => {
+    setIsLoadingButton(true);
+
+    // Remove the subproduct at the specified index
+    const newSubProductList = subProductList.filter((_, i) => i !== index);
+    setSubProductList(newSubProductList);
+    console.log(newSubProductList, "first");
+    // Format the updated subproduct list
+    const formattedSubProducts = newSubProductList.map((subProduct) => ({
+      subproduct: subProduct.subproduct._id,
+      quantity: subProduct.quantity,
+    }));
+
+    console.log("sec ", formattedSubProducts);
+
+    try {
+      const response = await ApiCall(
+        "put",
+        `${editProductUrl}/${subProductModal.productId}`,
+        { subProducts: formattedSubProducts }
+      );
+      console.log(response, "updated delete");
+      if (response?.status === 200) {
+        getAllProducts();
+        toast.success("Sub Product updated successfully");
+        setSubProductModal(false);
+      } else {
+        setAddProductModal(false);
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      console.error("Error updating subproducts:", error);
+    } finally {
+      setIsLoadingButton(false);
     }
   };
 
@@ -293,8 +327,6 @@ function Products() {
     getAllProducts();
   }, [params]);
 
-
-  
   return (
     <>
       <SlideMotion>
@@ -815,161 +847,67 @@ function Products() {
         centered
         width={"500px"}
       >
-        {/* <div className="modal-body">
-        {subProductModal?.isedit ? (
-        subProductList.map((subProduct, index) => (
-          <div className="row" key={index}>
-            <div className="flex-grow-1 col-12">
-              <label className="form-label">Sub Product</label>
-              <select
-                className="form-control"
-                value={subProductModal?.subproductsEditable?.subproduct}
-                onChange={(e) => handleInputChange(index, 'subproduct', e.target.value)}
-                required
-              >
-                <option value="">Select franchise name</option>
-                {allSubProduct.map((sub, subIndex) => (
-                  <option key={subIndex} value={sub._id}>
-                    {sub.name}
-                  </option>
-                ))}
-              </select>
-              <Form.Control.Feedback type="invalid">
-                Please select a sub product.
-              </Form.Control.Feedback>
-            </div>
-            <div className="flex-grow-1 col-12 mt-2">
-              <label className="form-label">Sub Product Quantity</label>
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Enter a quantity"
-                value={subProductModal?.quantity}
-                onChange={(e) =>
-                  handleInputChange(index, 'quantity', e.target.value === '' ? '' : Number(e.target.value))
-                }
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a quantity.
-              </Form.Control.Feedback>
-            </div>
-            {subProductList.length > 1 && (
-              <div className="align-self-end">
-                <i
-                  className="fs-4 fas fa-trash-alt ms-2 text-danger cursor-pointer"
-                  onClick={() => handleRemoveInput(index)}
-                  style={{ fontSize: '1.5rem' }}
-                ></i>
-              </div>
-            )}
-          </div>
-        ))
-      ) : (
-        <div className="table-responsive" style={{ padding: '12px' }}>
-          <table className="table table-hover mb-0">
-            <thead className="table-light">
-              <tr>
-                <th>Sl.no</th>
-                <th>Sub Product Name</th>
-                <th>Quantity</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {subProductModal?.sub?.length ? (
-                subProductModal.sub.map((products, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{products?.subproduct?.name.toUpperCase()}</td>
-                    <td style={{ color: products.quantity < 5 ? 'red' : 'green' }}>
-                      {products.quantity}
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => setSubProductModal({ show:true, isedit: true,subproductsEditable:subProductModal?.sub})}
-                        >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={4} style={{ textAlign: 'center' }}>
-                    <b>No Sub Products Found</b>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-        </div> */}
-        {/* <Modal.Body> */}
         <div className="modal-body">
-        {subProductModal.isedit ? (
-  subProductList.map((subProduct, index) => (
-    <div className="row mt-2" key={index}>
-      <div className="col-6">
-        <label className="form-label">Sub Product</label>
-        <select
-          className="form-control"
-          value={subProduct.subproduct._id}
-          onChange={(e) =>
-            handleInputChange(index, "subproduct", {
-              _id: e.target.value,
-            })
-          }
-          required
-        >
-          <option value="">Select franchise name</option>
-          {allSubProduct.map((sub, subIndex) => (
-            <option key={subIndex} value={sub._id}>
-              {sub.name}
-            </option>
-          ))}
-        </select>
-        <Form.Control.Feedback type="invalid">
-          Please select a sub product.
-        </Form.Control.Feedback>
-      </div>
-      <div className="col-5">
-        <label className="form-label">Sub Product Quantity</label>
-        <input
-          type="number"
-          className="form-control"
-          placeholder="Enter a quantity"
-          value={subProduct.quantity}
-          onChange={(e) =>
-            handleInputChange(
-              index,
-              "quantity",
-              e.target.value === "" ? "" : Number(e.target.value)
-            )
-          }
-          required
-        />
-        <Form.Control.Feedback type="invalid">
-          Please enter a quantity.
-        </Form.Control.Feedback>
-      </div>
-      <div className="col-1 d-flex align-items-end">
-        {subProductList.length > 1 && (
-          <i
-            className="fs-4 fas fa-trash-alt text-danger cursor-pointer"
-            onClick={() => handleRemoveInput(index)}
-            style={{ fontSize: "1.5rem" }}
-          ></i>
-        )}
-      </div>
-    </div>
-  ))
-) : (
-       
+          {subProductModal.isedit ? (
+            subProductList.map((subProduct, index) => (
+              <div className="row " key={index}>
+                <div className="col-6">
+                  <label className="form-label">Sub Product</label>
+                  <select
+                    className="form-control"
+                    value={subProduct.subproduct._id}
+                    onChange={(e) =>
+                      handleInputChange(index, "subproduct", {
+                        _id: e.target.value,
+                      })
+                    }
+                    required
+                  >
+                    <option value="">Select franchise name</option>
+                    {allSubProduct.map((sub, subIndex) => (
+                      <option key={subIndex} value={sub._id}>
+                        {sub.name}
+                      </option>
+                    ))}
+                  </select>
+                  <Form.Control.Feedback type="invalid">
+                    Please select a sub product.
+                  </Form.Control.Feedback>
+                </div>
+                <div className="col-5">
+                  <label className="form-label">Sub Product Quantity</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter a quantity"
+                    value={subProduct.quantity}
+                    onChange={(e) =>
+                      handleInputChange(
+                        index,
+                        "quantity",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    }
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a quantity.
+                  </Form.Control.Feedback>
+                </div>
+                <div className="col-1 d-flex align-items-end">
+                  {subProductList.length > 1 && (
+                    <i
+                      className="fs-4 fas fa-trash-alt text-danger cursor-pointer"
+                      onClick={() => deleteSubs(index)}
+                      style={{ fontSize: "1.5rem" }}
+                    ></i>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
             <div className="table-responsive">
-              <table className="table table-hover mb- mt-3">
+              <table className="table table-hover">
                 <thead className="table-light">
                   <tr>
                     <th>Sl.no</th>
@@ -995,22 +933,129 @@ function Products() {
                   )}
                 </tbody>
               </table>
-              <button
-                className="btn btn-primary d-flex justify-content-between"
-                onClick={() => handleEditClick()}
-              >
-                Edit
-                <i className="fas fa-pencil-alt ms-2"></i>
-              </button>
+              <div className="d-flex justify-content-end">
+                <button
+                  className="btn btn-danger mt-3 me-2"
+                  onClick={() => {
+                    setSubProductModal({
+                      show: false,
+                      sub: "",
+                      isedit: false,
+                      isadd: false,
+                    });
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary mt-3"
+                  onClick={() => handleEditClick()}
+                >
+                  Edit
+                </button>
+              </div>
             </div>
           )}
+
           {subProductModal.isedit && (
-            // <Modal.Footer>
-            <button className="btn btn-primary d-flex mt-3" onClick={handleSaveAndUpdate}>
-              Update
-            </button>
-            // </Modal.Footer>
+            <>
+              <Button
+                type="button"
+                className="btn btn-primary mt-3 me-2"
+                onClick={handleAddInput}
+              >
+                <i className="fas fa-plus"></i> Add More
+              </Button>
+              <div className="d-flex justify-content-end">
+                <button
+                  className="btn btn-danger mt-3 me-2"
+                  onClick={() => {
+                    setSubProductModal({
+                      show: false,
+                      sub: "",
+                      isedit: false,
+                      isadd: false,
+                    });
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary mt-3"
+                  onClick={handleSaveAndUpdate}
+                >
+                  Update
+                </button>
+              </div>
+            </>
           )}
+
+          {subProductModal.isadd ? (
+            <>
+              {subProductList.map((subProduct, index) => (
+                <div className="d-flex mb-3 mt-3" key={index}>
+                  <div className="flex-grow-1 me-2">
+                    <label className="form-label">Sub Product</label>
+                    <select
+                      className="form-control"
+                      value={subProduct.subproduct}
+                      onChange={(e) =>
+                        handleInputChange(index, "subproduct", e.target.value)
+                      }
+                      required
+                    >
+                      <option value="">Select franchise name</option>
+                      {allSubProduct.map((sub, subIndex) => (
+                        <option key={subIndex} value={sub._id}>
+                          {sub.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="invalid-feedback">
+                      Please select a sub product.
+                    </div>
+                  </div>
+                  <div className="flex-grow-1">
+                    <label className="form-label">Sub Product Quantity</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Enter a quantity"
+                      value={subProduct.quantity}
+                      onChange={(e) =>
+                        handleInputChange(
+                          index,
+                          "quantity",
+                          e.target.value === "" ? "" : Number(e.target.value)
+                        )
+                      }
+                      required
+                    />
+                    <div className="invalid-feedback">
+                      Please enter a quantity.
+                    </div>
+                  </div>
+                  {subProductList.length > 1 && (
+                    <div className="align-self-end">
+                      <i
+                        className="fas fa-trash-alt ms-2 text-danger cursor-pointer"
+                        onClick={() => handleRemoveInput(index)}
+                        style={{ fontSize: "1.5rem" }}
+                      ></i>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleAddInput}
+              >
+                <i className="fas fa-plus"></i> Add More
+              </button>
+            </>
+          ) : null}
         </div>
         {/* </Modal.Body> */}
       </ModalComponent>
