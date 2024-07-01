@@ -695,7 +695,7 @@ function Products() {
                       }
                       required
                     >
-                      <option value="">Select franchise name</option>
+                      <option value="">Select a Sub product </option>
                       {allSubProduct.map((sub, subIndex) => (
                         <option key={subIndex} value={sub._id}>
                           {sub.name}

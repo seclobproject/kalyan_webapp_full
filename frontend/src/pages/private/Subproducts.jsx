@@ -141,7 +141,7 @@ useEffect(()=>{
           setValidated(false);
         }}
       >
-        Add Products
+        Add 
       </Button>
     </div>
   </div>

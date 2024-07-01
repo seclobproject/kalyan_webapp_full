@@ -9,6 +9,7 @@ import Products from './pages/private/Products'
 import Stock from './pages/private/Stock'
 import StockReport from './pages/private/StockReport'
 import Subproducts from './pages/private/Subproducts'
+import StockInSubProducts from './pages/private/StockInSubProducts'
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path='/stocks' element={<Stock/>} />
           <Route path='/stocks-report' element={<StockReport/>} />
           <Route path='/sub-products' element={<Subproducts/>} />
+          <Route path='/sub-stocks' element={<StockInSubProducts/>} />
 
         </Route>
       </Routes>

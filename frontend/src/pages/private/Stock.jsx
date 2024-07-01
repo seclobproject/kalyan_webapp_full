@@ -38,7 +38,7 @@ function Stock() {
     pageSize: 1,
   });
   const [totalPages, setTotalPages] = useState(1);
-  const [filter, setFilter] = useState();
+  const [filter, setFilter] = useState("Kalyan Main Hub");
   const [name, setName] = useState("");
   const [searchKey, setSearchKey] = useState(0);
   const [onSearch, setOnSerach] = useState('');
@@ -63,7 +63,7 @@ function Stock() {
   const getAllProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiCall("get", `${getProductUrl}?search=${onSearch||'KALYAN MAIN HUB'}`, {}, params);
+      const response = await ApiCall("get", `${getProductUrl}?search=${onSearch}`, {}, params);
       if (response.status === 200) {
         setAllProducts(response?.data?.products);
         setIsLoading(false);
