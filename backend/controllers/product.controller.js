@@ -30,6 +30,7 @@ export async function updateProduct(req, res, next) {
 
     res.status(200).send({ message: "Product updated successfully" ,product});
   } catch (err) {
+    console.log(err);
     next(err);
   }
 }
