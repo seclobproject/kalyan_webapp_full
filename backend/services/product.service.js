@@ -31,6 +31,19 @@ export async function saveProduct(productData) {
       );
   }
 
+  // Remove duplicate subproducts
+  const uniqueSubProducts = [];
+  const subProductMap = new Map();
+
+  for (const subProduct of productData.subProducts) {
+    if (!subProductMap.has(subProduct.subproduct.toString())) {
+      subProductMap.set(subProduct.subproduct.toString(), true);
+      uniqueSubProducts.push(subProduct);
+    }
+  }
+
+  productData.subProducts = uniqueSubProducts;
+
   // update the product total prise
   if (!productData.quantity) {
     productData.totalPrice = productData.price;
@@ -50,8 +63,8 @@ export async function saveProduct(productData) {
     stock: [],
   });
 
-    category.products.push(product._id);
-    await category.save();
+  category.products.push(product._id);
+  await category.save();
 
   return { product };
 }
@@ -83,6 +96,7 @@ export async function productUpdate(productId, productData) {
           "Product with this product code already exists"
         );
     }
+
     const product = await productModel.findByIdAndUpdate(
       productId,
       productData,
