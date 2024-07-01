@@ -286,17 +286,13 @@ function Products() {
   const deleteSubs = async (index) => {
     setIsLoadingButton(true);
 
-    // Remove the subproduct at the specified index
     const newSubProductList = subProductList.filter((_, i) => i !== index);
     setSubProductList(newSubProductList);
-    console.log(newSubProductList, "first");
-    // Format the updated subproduct list
     const formattedSubProducts = newSubProductList.map((subProduct) => ({
       subproduct: subProduct.subproduct._id,
       quantity: subProduct.quantity,
     }));
 
-    console.log("sec ", formattedSubProducts);
 
     try {
       const response = await ApiCall(
@@ -304,10 +300,9 @@ function Products() {
         `${editProductUrl}/${subProductModal.productId}`,
         { subProducts: formattedSubProducts }
       );
-      console.log(response, "updated delete");
       if (response?.status === 200) {
         getAllProducts();
-        toast.success("Sub Product updated successfully");
+        toast.success("Sub Product deleted successfully");
         setSubProductModal(false);
       } else {
         setAddProductModal(false);
