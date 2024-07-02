@@ -18,7 +18,6 @@ function Subproducts() {
         show: false,
         id: null,
       });
-      console.log(addSubProductModal,"tets");
       const { Check_Validation } = useContext(MyContext);
       const [allSubProduct,SetAllSubProducts]=useState([]);
       const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
@@ -31,7 +30,6 @@ function Subproducts() {
     setIsLoading(true);
     const response = await ApiCall("get", getAllSubproductUrl);
     if (response.status === 200) {
-      console.log(response,"res..");
       SetAllSubProducts(response?.data?.products);
       setIsLoading(false);
     } else {
@@ -71,7 +69,6 @@ function Subproducts() {
       } else {
         const response = await ApiCall("post", addSubproductUrl, addSubProducts);
         if (response.status === 200) {
-          console.log(response,"response");
           setAddSubProductModal(false);
           setIsLoadingButton(false);
           setValidated(false);

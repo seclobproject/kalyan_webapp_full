@@ -31,7 +31,6 @@ function Stock() {
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
   const [addStocksData, setAddStockData] = useState({});
 
-  console.log(addStocksData,"adasadad");
   const { Check_Validation } = useContext(MyContext);
   const [allProducts, setAllProducts] = useState();
   const [allFranchise, setAllFranchise] = useState([]);
@@ -44,7 +43,6 @@ function Stock() {
   const [name, setName] = useState("");
   const [searchKey, setSearchKey] = useState(0);
   const [onSearch, setOnSerach] = useState('');
-  console.log(onSearch,"server");
   const [selectedOption, setSelectedOption] = useState(null);
   //get franchise
   const getAllFranchises = async () => {
@@ -84,7 +82,6 @@ function Stock() {
     setIsLoading(true);
     try {
       const response = await ApiCall("get", `${productFilterUrl}${filter}`);
-console.log(response,"res");
       if (response.status === 200) {
         setAllProducts(response?.data?.products);
         setIsLoading(false);
@@ -193,12 +190,9 @@ console.log(response,"res");
   }, []);
 
   useEffect(() => {
-    // Ensure allFranchise is defined and has elements
     if (allFranchise && allFranchise.length > 0) {
-      // Set default option on page load
       const defaultOption = allFranchise.find(franchise => franchise?.franchiseName === 'kalyan main hub');
       if (defaultOption) {
-        console.log(defaultOption, "defaultOption");
         setSelectedOption({ value: defaultOption._id, label: defaultOption.franchiseName });
         setFilter(defaultOption._id);
         setName(defaultOption.franchiseName);
@@ -207,16 +201,16 @@ console.log(response,"res");
   }, [allFranchise]);
 
   useEffect(() => {
-    // Call the appropriate product fetching function based on the filter state
     if (filter) {
       getAllFilterProducts();
     } 
   }, [filter, params]);
   useEffect(() => {
-    // Call the appropriate product fetching function based on the filter state
-    if (onSearch) {
+    if (onSearch.length) {
       getAllProducts();
-    } 
+    } else{
+      getAllFilterProducts();
+    }
   }, [params, onSearch]);
 
   useEffect(()=>{
@@ -232,12 +226,17 @@ if(addStockModal?.show===false){
       // Set default option on page load
       const defaultOption = allFranchise.find(franchise => franchise?.franchiseName === 'kalyan main hub');
       if (defaultOption) {
-        console.log(defaultOption, "defaultOption");
         setSelectedOption({ value: defaultOption._id, label: defaultOption.franchiseName });
         setFilter(defaultOption._id);
         setName(defaultOption.franchiseName);
       }
     }
+  };
+  const handleResetClick = () => {
+    setDefaultFranchiseOption();
+    setSearchKey(searchKey + 1);
+    getAllFilterProducts();
+    setOnSerach("");
   };
   return (
     <>
@@ -261,7 +260,8 @@ if(addStockModal?.show===false){
     value={onSearch}
     onChange={(e) => {
       setOnSerach(e.target.value)
-      setName("") 
+     
+    
     }}
     required
   />
@@ -291,6 +291,7 @@ if(addStockModal?.show===false){
     onClick={() => {
       setDefaultFranchiseOption();
       setSearchKey(searchKey + 1);
+      getAllFilterProducts();
       setOnSerach("")
     }}
   >
@@ -327,8 +328,6 @@ if(addStockModal?.show===false){
                     {allProducts?.length ? (
                       <>
                         {allProducts?.map((products, index) => (
-                          console.log("log",products?._id),
-                          // console.log("log",products?.product?.productId),
 
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -371,8 +370,9 @@ if(addStockModal?.show===false){
                                   });
                                   setAddStockData(prevState => ({
                                     ...prevState,
-                                    product: !filter ? products?._id : products?.productId
+                                    product: products ? products._id : products.productId
                                   }));
+                                  
                                   setValidated(false);
                                 }}
                               >
@@ -391,11 +391,11 @@ if(addStockModal?.show===false){
                                     show: true,
                                     out: true,
                                   });
-                                  setAddStockData({
-                                    ...addStocksData,
-                                    product: !filter
-                                    ? products?._id:products?.productId
-                                  });
+                                  setAddStockData(prevState => ({
+                                    ...prevState,
+                                    product: products ? products._id : products.productId
+                                  }));
+                                  
                                   setValidated(false);
 
                                 }}

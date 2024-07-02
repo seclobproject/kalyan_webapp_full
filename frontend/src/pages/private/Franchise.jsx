@@ -21,7 +21,6 @@ function Franchise() {
   });
   const [validated, setValidated] = useState(false);
   const [allFranchise, setAllFranchise] = useState([]);
-  console.log(allFranchise,"all");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });

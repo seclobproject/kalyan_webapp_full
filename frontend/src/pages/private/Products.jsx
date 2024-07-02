@@ -39,16 +39,12 @@ function Products() {
     isadd: false,
   });
   const [subProductModals, setSubProductModals] = useState({});
-  console.log(subProductModal, "subProductModal");
 
-  console.log(subProductModals, "subProductModalS");
   const [allCategory, setAllCatgeory] = useState([]);
   const [allFranchise, setAllFranchise] = useState([]);
   const [addProductData, setAddProductData] = useState({});
   const [addSubProductData, setSubAddProductData] = useState({});
-  console.log(addSubProductData, "addSubProductData");
 
-  console.log(addProductData, "data");
   const [params, setParams] = useState({
     page: 1,
     pageSize: 1,
@@ -58,7 +54,6 @@ function Products() {
   const [subProductList, setSubProductList] = useState([
     { subproduct: "", quantity: "" },
   ]);
-  console.log(subProductList, "qew");
   const [currentEditIndex, setCurrentEditIndex] = useState(null);
 
   //get all products
@@ -175,7 +170,6 @@ function Products() {
       setIsLoading(true);
       const response = await ApiCall("get", getAllSubproductUrl);
       if (response.status === 200) {
-        console.log(response, "res..");
         setAllSubProduct(response?.data?.products);
         setIsLoading(false);
       } else {
@@ -265,7 +259,6 @@ function Products() {
         `${editProductUrl}/${subProductModal.productId}`,
         { subProducts: formattedSubProducts }
       );
-      console.log(response, "updated");
       if (response?.status === 200) {
         toast.success("Sub Product updated successfully");
         setSubProductModal(false);
@@ -377,7 +370,6 @@ function Products() {
                       <>
                         {allProducts?.map(
                           (products, index) => (
-                            console.log(allProducts, "all"),
                             (
                               <tr key={index}>
                                 <td>{index + 1}</td>

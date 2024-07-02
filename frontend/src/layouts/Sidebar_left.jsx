@@ -27,7 +27,6 @@ const SidebarLeft = ({ drawer }) => {
     localStorage.removeItem("loggedIn");
     navigate("/");
   };
-console.log(drawer);
   const menuItems = {
     "/dashboard": "dashboard",
     "/franchises": "franchises",

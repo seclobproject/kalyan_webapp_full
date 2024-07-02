@@ -30,7 +30,6 @@ function StockInSubProducts() {
       setIsLoading(true);
       const response = await ApiCall("get", getAllSubproductUrl);
       if (response.status === 200) {
-        console.log(response,"res..");
         SetAllSubProducts(response?.data?.products);
         setIsLoading(false);
       } else {

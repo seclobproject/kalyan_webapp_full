@@ -13,7 +13,6 @@ function OutletConnnection() {
   const toggleSidebar = () => {
     setDrawer(!drawer);
   };
-console.log(drawer);
 
   return (
     <div>
