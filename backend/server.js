@@ -27,9 +27,9 @@ app.use(cors({ origin: true, credentials: true }));
 // app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use("/uploads/products", express.static(path.join("uploads/products")));
 
-app.get("/", (req, res) => {
-  res.send({ message: "Hello World" });
-});
+// app.get("/", (req, res) => {
+//   res.send({ message: "Hello World" });
+// });
 
 app.use(
   authRouter,
