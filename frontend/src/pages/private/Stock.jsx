@@ -105,9 +105,8 @@ console.log(addStocksData,"data");
         setAddStockData({});
         setIsLoadingButton(false);
         setValidated(false);
-        getAllProducts();
+        getAllFilterProducts()
         setSearchKey(searchKey + 1);
-        setName("");
         setFilter()
         toast.success(response?.data?.message);
       } else {
@@ -115,10 +114,9 @@ console.log(addStocksData,"data");
         setIsLoadingButton(false);
         setValidated(false);
         setSearchKey(searchKey + 1);
-        setName("");
 
         toast.error(response?.response?.data?.message);
-        getAllProducts();
+        getAllFilterProducts()
       }
     } catch (error) {
       console.error("Error adding stocks :", error);
@@ -141,9 +139,8 @@ console.log(addStocksData,"data");
         setIsLoadingButton(false);
         setValidated(false);
         setSearchKey(searchKey + 1);
-        setName("");
         setFilter();
-        getAllProducts();
+        getAllFilterProducts()
         toast.success(response?.data?.message);
       } else {
         // setAddStockModal(false);
@@ -151,7 +148,6 @@ console.log(addStocksData,"data");
         setIsLoadingButton(false);
         setValidated(false);
         setSearchKey(searchKey + 1);
-        setName("");
 
         toast.error(response?.response?.data?.message);
         getAllProducts();
