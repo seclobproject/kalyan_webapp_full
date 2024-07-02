@@ -30,6 +30,8 @@ function Stock() {
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
   const [addStocksData, setAddStockData] = useState({});
+
+  console.log(addStocksData,"adasadad");
   const { Check_Validation } = useContext(MyContext);
   const [allProducts, setAllProducts] = useState();
   const [allFranchise, setAllFranchise] = useState([]);
@@ -38,11 +40,12 @@ function Stock() {
     pageSize: 1,
   });
   const [totalPages, setTotalPages] = useState(1);
-  const [filter, setFilter] = useState();
+  const [filter, setFilter] = useState("");
   const [name, setName] = useState("");
   const [searchKey, setSearchKey] = useState(0);
   const [onSearch, setOnSerach] = useState('');
-
+  console.log(onSearch,"server");
+  const [selectedOption, setSelectedOption] = useState(null);
   //get franchise
   const getAllFranchises = async () => {
     try {
@@ -63,7 +66,7 @@ function Stock() {
   const getAllProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiCall("get", `${getProductUrl}?search=${onSearch||'KALYAN MAIN HUB'}`, {}, params);
+      const response = await ApiCall("get", `${getProductUrl}?search=${onSearch}`, {}, params);
       if (response.status === 200) {
         setAllProducts(response?.data?.products);
         setIsLoading(false);
@@ -181,20 +184,61 @@ console.log(response,"res");
   };
 
   useEffect(() => {
+    // Fetch all franchises when the component mounts
+    const fetchFranchises = async () => {
+      await getAllFranchises();
+    };
+
+    fetchFranchises();
+  }, []);
+
+  useEffect(() => {
+    // Ensure allFranchise is defined and has elements
+    if (allFranchise && allFranchise.length > 0) {
+      // Set default option on page load
+      const defaultOption = allFranchise.find(franchise => franchise?.franchiseName === 'kalyan main hub');
+      if (defaultOption) {
+        console.log(defaultOption, "defaultOption");
+        setSelectedOption({ value: defaultOption._id, label: defaultOption.franchiseName });
+        setFilter(defaultOption._id);
+        setName(defaultOption.franchiseName);
+      }
+    }
+  }, [allFranchise]);
+
+  useEffect(() => {
+    // Call the appropriate product fetching function based on the filter state
     if (filter) {
       getAllFilterProducts();
-    } else {
+    } 
+  }, [filter, params]);
+  useEffect(() => {
+    // Call the appropriate product fetching function based on the filter state
+    if (onSearch) {
       getAllProducts();
-    }
-    getAllFranchises();
-  }, [filter, params,onSearch]);
-
+    } 
+  }, [params, onSearch]);
 
   useEffect(()=>{
 if(addStockModal?.show===false){
   setAddStockData({})
 }
   },[addStockModal]);
+
+
+  const setDefaultFranchiseOption = () => {
+    // Ensure allFranchise is defined and has elements
+    if (allFranchise && allFranchise.length > 0) {
+      // Set default option on page load
+      const defaultOption = allFranchise.find(franchise => franchise?.franchiseName === 'kalyan main hub');
+      if (defaultOption) {
+        console.log(defaultOption, "defaultOption");
+        setSelectedOption({ value: defaultOption._id, label: defaultOption.franchiseName });
+        setFilter(defaultOption._id);
+        setName(defaultOption.franchiseName);
+      }
+    }
+  };
   return (
     <>
       <SlideMotion>
@@ -217,8 +261,7 @@ if(addStockModal?.show===false){
     value={onSearch}
     onChange={(e) => {
       setOnSerach(e.target.value)
-    
-       
+      setName("") 
     }}
     required
   />
@@ -246,9 +289,9 @@ if(addStockModal?.show===false){
   <Button
     variant="secondary"
     onClick={() => {
-      setFilter("");
+      setDefaultFranchiseOption();
       setSearchKey(searchKey + 1);
-      setName("");
+      setOnSerach("")
     }}
   >
     Reset
@@ -284,7 +327,9 @@ if(addStockModal?.show===false){
                     {allProducts?.length ? (
                       <>
                         {allProducts?.map((products, index) => (
-                          console.log("log",allProducts),
+                          console.log("log",products?._id),
+                          // console.log("log",products?.product?.productId),
+
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>
@@ -298,7 +343,7 @@ if(addStockModal?.show===false){
                             </td>
                             <td>
                               {products?.name?.toUpperCase() ||
-                                products?.product?.productName?.toUpperCase()}
+                                products?.productName?.toUpperCase()}
                             </td>
                             <td>
                               {products?.category?.categoryName?.toUpperCase() ||
@@ -324,12 +369,10 @@ if(addStockModal?.show===false){
                                     show: true,
                                     out: false,
                                   });
-                                  setAddStockData({
-                                    ...addStocksData,
-                                    product: !filter
-                                      ? products?._id
-                                      : products?.product?.productId,
-                                  });
+                                  setAddStockData(prevState => ({
+                                    ...prevState,
+                                    product: !filter ? products?._id : products?.productId
+                                  }));
                                   setValidated(false);
                                 }}
                               >
@@ -351,8 +394,7 @@ if(addStockModal?.show===false){
                                   setAddStockData({
                                     ...addStocksData,
                                     product: !filter
-                                      ? products?._id
-                                      : products?.product?.productId,
+                                    ? products?._id:products?.productId
                                   });
                                   setValidated(false);
 
