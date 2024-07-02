@@ -370,7 +370,7 @@ console.log(products,"all"),
                                   });
                                   setAddStockData(prevState => ({
                                     ...prevState,
-                                    product: products?.productId ? products.productId : products?._id
+                                    product: products?.productId ? products?.productId : products?._id
                                   }));
                                   
                                   
@@ -394,7 +394,7 @@ console.log(products,"all"),
                                   });
                                   setAddStockData(prevState => ({
                                     ...prevState,
-                                    product: products?.productId ? products.productId : products?._id
+                                    product: products?.productId ? products?.productId : products?._id
                                   }));
                                   
                                   setValidated(false);
