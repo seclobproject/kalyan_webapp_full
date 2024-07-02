@@ -30,7 +30,7 @@ function Stock() {
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
   const [addStocksData, setAddStockData] = useState({});
-
+console.log(addStocksData,"data");
   const { Check_Validation } = useContext(MyContext);
   const [allProducts, setAllProducts] = useState();
   const [allFranchise, setAllFranchise] = useState([]);
@@ -328,7 +328,7 @@ if(addStockModal?.show===false){
                     {allProducts?.length ? (
                       <>
                         {allProducts?.map((products, index) => (
-
+console.log(products,"all"),
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>
@@ -370,8 +370,9 @@ if(addStockModal?.show===false){
                                   });
                                   setAddStockData(prevState => ({
                                     ...prevState,
-                                    product: products ? products._id : products.productId
+                                    product: products?.productId ? products.productId : products?._id
                                   }));
+                                  
                                   
                                   setValidated(false);
                                 }}
@@ -393,7 +394,7 @@ if(addStockModal?.show===false){
                                   });
                                   setAddStockData(prevState => ({
                                     ...prevState,
-                                    product: products ? products._id : products.productId
+                                    product: products?.productId ? products.productId : products?._id
                                   }));
                                   
                                   setValidated(false);
